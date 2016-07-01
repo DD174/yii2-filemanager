@@ -2,7 +2,6 @@
 
 use pendalf89\filemanager\assets\FilemanagerAsset;
 use pendalf89\filemanager\Module;
-use pendalf89\filemanager\models\Tag;
 use yii\helpers\ArrayHelper;
 use yii\widgets\ListView;
 use yii\helpers\Html;
@@ -35,8 +34,14 @@ $this->params['moduleBundle'] = FilemanagerAsset::register($this);
     ]) ?>
 
     <div class="dashboard">
-        <p><?= Html::a('<span class="glyphicon glyphicon-upload"></span> ' . Module::t('main', 'Upload manager'),
-                ['file/uploadmanager'], ['class' => 'btn btn-default']) ?></p>
+        <p>
+            <?= Html::a('<span class="glyphicon glyphicon-upload"></span> ' . Module::t('main', 'Upload manager'),
+                ['file/uploadmanager'], ['class' => 'btn btn-default']) ?>
+            <?= Html::button(Module::t('main', 'Folders'), ['class' => 'btn btn-default', 'onclick' => "$('.folder-list').toggleClass('hidden');"]) ?>
+        </p>
+        <div class="folder-list hidden">
+            <?= \Yii::$app->controller->run('/filemanager/folder/index', ['selected_id' => $model->folder_id]) ?>
+        </div>
         <div id="fileinfo">
 
         </div>

@@ -78,6 +78,8 @@ class FileController extends Controller
 	    if ($tagIds !== 'undefined') {
 		    $model->setTagIds(explode(',', $tagIds));
 	    }
+        $model->folder_id = Yii::$app->request->post('folderId');
+        $model->folderNewName = Yii::$app->request->post('folderNewName');
 
         $model->saveUploadedFile($routes, $rename);
         $bundle = FilemanagerAsset::register($this->view);

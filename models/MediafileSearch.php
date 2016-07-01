@@ -26,6 +26,7 @@ class MediafileSearch extends Mediafile
     {
         return [
             [['tagIds'], 'safe'],
+            [['folder_id'], 'integer'],
         ];
     }
 
@@ -47,6 +48,10 @@ class MediafileSearch extends Mediafile
         if (!$this->validate()) {
             return $dataProvider;
         }
+
+        $query->andFilterWhere([
+            'folder_id' => $this->folder_id,
+        ]);
 
         if ($this->tagIds) {
             $query->joinWith('tags')->andFilterWhere(['in', Tag::tableName() . '.id', $this->tagIds]);

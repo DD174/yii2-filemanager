@@ -27,12 +27,18 @@ use Imagine\Image\ImageInterface;
  * @property string $thumbs
  * @property integer $created_at
  * @property integer $updated_at
+ * @property integer $folder_id
  * @property Owners[] $owners
  * @property Tag[] $tags
  */
 class Mediafile extends ActiveRecord
 {
     public $file;
+
+    /**
+     * @var string|null имя новой папки
+     */
+    public $folderNewName;
 
     public static $imageFileTypes = ['image/gif', 'image/jpeg', 'image/png'];
 
@@ -104,8 +110,8 @@ class Mediafile extends ActiveRecord
     {
         return [
             [['filename', 'type', 'url', 'size'], 'required'],
-            [['url', 'alt', 'description', 'thumbs'], 'string'],
-            [['created_at', 'updated_at', 'size'], 'integer'],
+            [['url', 'alt', 'description', 'thumbs', 'folderNewName'], 'string'],
+            [['created_at', 'updated_at', 'size', 'folder_id'], 'integer'],
             [['filename', 'type'], 'string', 'max' => 255],
             [['file'], 'file'],
             [['tagIds'], 'safe'],
@@ -128,6 +134,7 @@ class Mediafile extends ActiveRecord
             'thumbs' => Module::t('main', 'Thumbnails'),
             'created_at' => Module::t('main', 'Created'),
             'updated_at' => Module::t('main', 'Updated'),
+            'folder_id' => Module::t('main', 'Folder'),
             'tagIds' => Module::t('main', 'Tags'),
         ];
     }
@@ -165,6 +172,14 @@ class Mediafile extends ActiveRecord
     }
 
     /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getFolder()
+    {
+        return $this->hasOne(Folder::className(), ['id' => 'folder_id']);
+    }
+
+    /**
      * @return array|null
      */
     public function getTagIds() {
@@ -178,6 +193,27 @@ class Mediafile extends ActiveRecord
      */
     public function setTagIds($value) {
         $this->tagIds = $value;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function beforeSave($insert)
+    {
+        if ($this->folderNewName) {
+            if (!$folder = Folder::findOne(['name' => $this->folderNewName, 'parent_id' => $this->folder_id])) {
+                $folder = new Folder();
+                $folder->parent_id = $this->folder_id;
+                $folder->name = $this->folderNewName;
+                $folder->save();
+            }
+            if (!$folder->hasErrors()) {
+                $this->folderNewName = null;
+                $this->folder_id = $folder->id;
+            }
+        }
+
+        return parent::beforeSave($insert);
     }
 
     public function beforeDelete()

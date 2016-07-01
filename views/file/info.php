@@ -51,13 +51,29 @@ $bundle = FilemanagerAsset::register($this);
             'maximumInputLength' => 10,
             // нельзя создавать теги с числовым именем
             'createTag' => new \yii\web\JsExpression("function (params) {
-                if (/^\d+$/.test(params.term)) {
-                    return null;
-                }
-                return {id: params.term, text: params.term};
-            }"),
+                    if (/^\d+$/.test(params.term)) {
+                        return null;
+                    }
+                    return {id: params.term, text: params.term};
+                }"),
         ],
     ]) ?>
+
+    <div class="form-group">
+        <label class="control-label" for="filemanager-folder-id">Выберите папку</label>
+        <?= Html::activeDropDownList(
+            $model,
+            'folder_id',
+            \pendalf89\filemanager\models\Folder::getSelectItems(null),
+            [
+                'id' => 'filemanager-folder-id',
+                'prompt' => Module::t('main', 'Select a folder'),
+                'class' => 'form-control',
+            ]
+        ) ?>
+        <?= Html::button('', ['class' => 'add-folder glyphicon glyphicon-plus btn btn-default btn-sm', 'title' => Module::t('main', 'Add a subfolder')]) ?>
+        <?= Html::activeTextInput($model, 'folderNewName', ['id' => 'filemanager-folder-name', 'class' => 'form-control hidden']) ?>
+    </div>
 
     <?php if ($model->isImage()) : ?>
         <?= $form->field($model, 'alt')->textInput(['class' => 'form-control input-sm']); ?>

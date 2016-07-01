@@ -32,4 +32,13 @@ return [
     'Tag' => 'Тег',
     'Tags' => 'Теги',
     'Search' => 'Найти',
+    'Folder' => 'Папка',
+    'Folders' => 'Папки',
+    'Add a subfolder' => 'Добавить вложенную папку',
+    'To delete a folder?' => 'Удалить папку?',
+    'You can not delete if there are sub-categories' => 'Нельзя удалить, если есть подкатегории',
+    'Delete the folder' => 'Удалить папку',
+    'Edit folder' => 'Редактировать папку',
+    'Root directory' => 'Корневая директория',
+    'Select a folder' => 'Выберите папку',
 ];

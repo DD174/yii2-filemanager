@@ -6,6 +6,7 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $searchModel pendalf89\filemanager\models\Mediafile */
 
+\pendalf89\filemanager\assets\UploadmanagerAsset::register($this);
 ?>
 
 <header id="header"><span class="glyphicon glyphicon-upload"></span> <?= Module::t('main', 'Upload manager') ?></header>
@@ -19,7 +20,17 @@ use yii\helpers\Html;
             'autoUpload'=> Yii::$app->getModule('filemanager')->autoUpload,
         ],
         'clientEvents' => [
-            'fileuploadsubmit' => "function (e, data) { data.formData = [{name: 'tagIds', value: $('#filemanager-tagIds').val()}]; }",
+            'fileuploadsubmit' => "function (e, data) {
+            var tags = $('#filemanager-tagIds').val();
+            data.formData = [];
+            data.formData = [
+                {name: 'folderId', value: $('#filemanager-folder-id').val() },
+                {name: 'folderNewName', value: $('#filemanager-folder-name').val() },
+            ];
+            if (tags) {
+                data.formData.push({name: 'tagIds', value: tags });
+            }
+            }",
         ],
         'url' => ['upload'],
         'gallery' => false,

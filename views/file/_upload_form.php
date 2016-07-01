@@ -1,5 +1,6 @@
 <?php
 /** @var \dosamigos\fileupload\FileUploadUI $this */
+use pendalf89\filemanager\Module;
 use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
 use pendalf89\filemanager\models\Tag;
@@ -48,6 +49,50 @@ $context = $this->context;
             </div>
             <!-- The extended global progress state -->
             <div class="progress-extended">&nbsp;</div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <?= \kartik\select2\Select2::widget([
+                'id' => 'filemanager-tagIds',
+                'name' => 'tagIds',
+                'maintainOrder' => true,
+                'data' => ArrayHelper::map(Tag::find()->all(), 'id', 'name'),
+                'options' => ['multiple' => true],
+                'pluginOptions' => [
+                    'tags' => true,
+                    'maximumInputLength' => 10,
+                    // нельзя создавать теги с числовым именем
+                    'createTag' => new \yii\web\JsExpression("function (params) {
+                    if (/^\d+$/.test(params.term)) {
+                        return null;
+                    }
+                    return {
+                      id: params.term,
+                      text: params.term
+                    };
+                }"),
+                ],
+            ]) ?>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12 form-inline">
+            <div class="form-group">
+                <label class="control-label" for="filemanager-folder-id"><?= Module::t('main', 'Select a folder') ?></label>
+                <?= Html::dropDownList(
+                    'folder_id',
+                    null,
+                    \pendalf89\filemanager\models\Folder::getSelectItems(null),
+                    [
+                        'id' => 'filemanager-folder-id',
+                        'prompt' => Module::t('main', 'Root directory'),
+                        'class' => 'form-control',
+                    ]
+                ) ?>
+                <?= Html::button('', ['class' => 'add-folder glyphicon glyphicon-plus btn btn-default btn-sm', 'title' => Module::t('main', 'Add a subfolder')]) ?>
+                <?= Html::textInput('folder_name', '', ['id' => 'filemanager-folder-name', 'class' => 'form-control hidden']) ?>
+            </div>
         </div>
     </div>
     <!-- The table listing the files available for upload/download -->
