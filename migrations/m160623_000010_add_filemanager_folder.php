@@ -39,6 +39,7 @@ class m160623_000010_add_filemanager_folder extends Migration
     {
         $this->dropForeignKey('filemanager_mediafile_folder_id__folder_id', 'filemanager_mediafile');
         $this->dropForeignKey('filemanager_folder_parent_id__folder_id', 'filemanager_folder');
+        $this->dropColumn('filemanager_mediafile', 'folder_id');
         $this->dropTable('filemanager_folder');
     }
 }
